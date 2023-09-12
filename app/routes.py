@@ -12,7 +12,7 @@ def get_all_tasks():
     }
     return out
 
-@app.post("/tasks")
+@app.post("/tasks/")
 def create_task():
     task_data = request.json
     task.insert(task_data)
@@ -20,12 +20,16 @@ def create_task():
 
 @app.get("/tasks/<int:pk>")
 def get_single_task(pk):
-    task = task.select_by_id(pk)
+    single_task = task.select_by_id(pk)
+    status_code = 200
+    single_task = task.select_by_id(pk)
+    if not single_task:
+        status_code = 404
     out = {
         "ok": True,
-        "task": task
+        "task": single_task
     }
-    return out 
+    return out, status_code
 
 @app.put("/tasks/<int:pk>")
 def update_task(pk):
@@ -33,7 +37,7 @@ def update_task(pk):
     task.update(task_data,pk)
     return "", 204
 
-@app.delete("tasks/<int:pk>")
+@app.delete("/tasks/<int:pk>")
 def delete_task(pk):
     task.delete(pk)
     return "", 204
